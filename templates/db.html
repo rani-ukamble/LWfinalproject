@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL Query Executor</title>
+    <style>
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: red;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color:white;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+    </div><br><br><br>
+    <h1>MySQL Query Executor</h1>
+    <form action="/db" method="post">
+        <label for="query">Enter your SQL query:</label><br>
+        <textarea id="query" name="query" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="Execute">
+    </form>
+
+    {% if error %}
+    <h2>Error:</h2>
+    <p>{{ error }}</p>
+    {% endif %}
+
+    {% if data %}
+    <h2>Query Results:</h2>
+    {% if data == "Query executed successfully." %}
+    <p>{{ data }}</p>
+    {% else %}
+    <table border="1">
+        <thead>
+            <tr>
+                {% for column in data[0] %}
+                <th>{{ loop.index }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% endif %}
+</body>
+</html>

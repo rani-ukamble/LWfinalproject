@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Search</title>
+    <style>
+        body{
+            margin-top:20px;
+            margin-left:20px;
+        }
+        .container{
+            align-content:center;
+            margin-left:300px;
+            margin-top:50px;
+        }
+        button{
+            color:white;
+            background-color: black;
+        }
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: red;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color:white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+    </div>
+
+    
+    </button>
+    <div class="container">
+    <h1>Search Google</h1>
+    <form action="{{ url_for('top5results') }}" method="post" class="fo">
+        <input type="text" name="query" placeholder="Enter your search query" value="{{ request.form['query'] }}">
+        <button type="submit">Search</button>
+    </form>
+<br>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if results %}
+        <h2>Search Results:</h2>
+        <ul>
+            {% for title, link in results %}
+                <li>
+                    <a href="{{ link }}" target="_blank">{{ title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+</body>
+</html>

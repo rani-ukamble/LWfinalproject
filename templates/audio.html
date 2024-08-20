@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Audio Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(100% - 22px); /* Adjust for padding and border */
+            margin-bottom: 10px;
+            font-size: 1em;
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        audio {
+            margin-top: 20px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+       
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: red;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color:white;
+            border-radius: 5px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+    </div>
+    <div class="container">
+        <h1>Text to Audio Converter</h1>
+        <form action="/convert" method="post">
+            <textarea name="text" placeholder="Enter the text you want to convert to audio">{{ text }}</textarea>
+            <br>
+            <button type="submit">Convert to Audio</button>
+        </form>
+        {% if audio_file %}
+            <h2>Audio Result:</h2>
+            <audio controls>
+                <source src="{{ url_for('static', filename='output.mp3') }}" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        {% endif %}
+    </div>
+</body>
+</html>

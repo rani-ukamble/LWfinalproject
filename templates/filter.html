@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filter Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        select {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            display: block;
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .images-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .images-container img {
+            width: 45%;
+        }
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: red;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color:white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+    </div>
+
+    <div class="container">
+        <h1>Upload and Apply Filter to Image</h1>
+        <form id="uploadForm">
+            <input type="file" id="imageFile" name="file" required><br>
+            <button type="submit">Upload Image</button>
+        </form>
+        <br><br>
+        <form id="filterForm">
+            <select id="filterSelect">
+                <option value="BLUR">Blur</option>
+                <option value="CONTOUR">Contour</option>
+                <option value="DETAIL">Detail</option>
+                <option value="EDGE_ENHANCE">Edge Enhance</option>
+            </select>
+            <button type="submit">Apply Filter</button>
+        </form>
+        <div id="result">
+            <div class="images-container">
+                <img id="originalImage" src="" alt="Original Image" style="display: none;">
+                <img id="filteredImage" src="" alt="Filtered Image" style="display: none;">
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('file', document.getElementById('imageFile').files[0]);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    // Display the uploaded image
+                    return fetch('/original_image');
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const originalImage = document.getElementById('originalImage');
+                originalImage.src = url;
+                originalImage.style.display = 'block';
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+        });
+
+        document.getElementById('filterForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const filter = document.getElementById('filterSelect').value;
+            
+            fetch('/apply_filter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ filter: filter })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const filteredImage = document.getElementById('filteredImage');
+                filteredImage.src = url;
+                filteredImage.style.display = 'block';
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+        });
+    </script>
+</body>
+</html>

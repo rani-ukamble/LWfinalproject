@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filters</title>
+    <style>
+        #output-image {
+            max-width: 100%;
+            height: auto;
+        }
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: red;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: black;
+            color:white;
+            border-radius: 5px;
+        }
+
+        .filter-option {
+            display: inline-block;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .filter-option img {
+            max-width: 100px;
+            border: 2px solid transparent;
+            transition: border 0.3s ease;
+        }
+
+        .filter-option img:hover {
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">Home</a>
+    </div><br><br><br>
+    <h1>Apply Cool Filters</h1>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" id="image-input" accept="image/*" required>
+        <br><br>
+        <div id="filters">
+            <div class="filter-option" data-filter="sunglass">
+                <img src="{{ url_for('static', filename='sunglass.png') }}" alt="Sunglass">
+            </div>
+            <div class="filter-option" data-filter="stars">
+                <img src="{{ url_for('static', filename='stars.png') }}" alt="Stars">
+            </div>
+            <div class="filter-option" data-filter="crown">
+                <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown">
+            </div>
+            <div class="filter-option" data-filter="flower">
+                <img src="{{ url_for('static', filename='flower.png') }}" alt="Flower">
+            </div>
+            <div class="filter-option" data-filter="flowers">
+                <img src="{{ url_for('static', filename='flowers.png') }}" alt="Flowers">
+            </div>
+            <div class="filter-option" data-filter="king">
+                <img src="{{ url_for('static', filename='king.png') }}" alt="King">
+            </div>
+        </div>
+        <br><br>
+    </form>
+
+    <h2>Result:</h2>
+    <img id="output-image" src="#" alt="Filtered Image">
+
+    <script>
+        document.querySelectorAll('.filter-option').forEach(function (element) {
+            element.addEventListener('click', function () {
+                var formData = new FormData(document.getElementById('upload-form'));
+                formData.append('filter', this.getAttribute('data-filter'));
+
+                fetch('/apply_coolfilter', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById('output-image').src = 'data:image/jpeg;base64,' + data.image;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Bootstrap App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        h1 {
+            color: red;
+        }
+        .row .col-md-4 {
+            display: flex;
+            justify-content: center;
+        }
+        .btn-block {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">How can I help you?</h1>
+        <div class="row mt-4">
+            <!-- Python Tasks -->
+            <div class="col-md-12">
+                <h3 class="text-center">Python Tasks</h3><br>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('send_email') }}" class="btn btn-success btn-block">Send Email</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('sms_page') }}" class="btn btn-warning btn-block">Send SMS</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('top5') }}" class="btn btn-primary btn-block">Scrap top5 search results from Google</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('audio') }}" class="btn btn-success btn-block">Convert text-to-audio</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('bulk_email') }}" class="btn btn-warning btn-block">Send bulk email</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('location') }}" class="btn btn-primary btn-block">Find the current geo coordinates and location</a>
+                    </div>
+                </div>
+            </div>
+            <!-- ML Tasks -->
+            <div class="col-md-12 mt-4">
+                <h3 class="text-center">ML Tasks</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('eda') }}" class="btn btn-success btn-block">Data processing on given dataset</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('model') }}" class="btn btn-warning btn-block">Create a model and integrate it with web app</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('filter') }}" class="btn btn-primary btn-block">Apply different filters over an image</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('image') }}" class="btn btn-success btn-block">Click an image and crop the face part and show it on the main image</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('snapfilter') }}" class="btn btn-warning btn-block">Click an image and apply some cool filters on image like sunglasses, stars etc.</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('numpy_image') }}" class="btn btn-primary btn-block">Create your own custom image using numpy</a>
+                    </div>
+                </div>
+            </div>
+            <!-- GenAI Tasks -->
+            <div class="col-md-12 mt-4">
+                <h3 class="text-center">GenAI Tasks</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('drive') }}" class="btn btn-success btn-block">Search your Google Drive based on your prompt</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('database') }}" class="btn btn-warning btn-block">Search the database based on your prompt</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('linkedin') }}" class="btn btn-primary btn-block">Search information from LinkedIn based on your prompt</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

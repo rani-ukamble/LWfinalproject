@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send SMS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px #000;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+       
+    </style>
+</head>
+<body>
+   
+
+    <div class="container">
+        <h2>Send SMS</h2>
+        <form action="{{ url_for('send_sms') }}" method="POST">
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" placeholder="+1234567890" required>
+            
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" placeholder="Enter your message here..." required></textarea>
+            
+            <button type="submit">Send SMS</button>
+        </form>
+    </div>
+</body>
+</html>

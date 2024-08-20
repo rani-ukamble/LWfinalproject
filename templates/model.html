@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Iris Classifier</h1>
+        <form id="predictForm">
+            <label for="sepal_length">Sepal Length:</label>
+            <input type="number" step="any" id="sepal_length" name="sepal_length" required>
+            
+            <label for="sepal_width">Sepal Width:</label>
+            <input type="number" step="any" id="sepal_width" name="sepal_width" required>
+            
+            <label for="petal_length">Petal Length:</label>
+            <input type="number" step="any" id="petal_length" name="petal_length" required>
+            
+            <label for="petal_width">Petal Width:</label>
+            <input type="number" step="any" id="petal_width" name="petal_width" required>
+            
+            <button type="submit">Predict</button>
+        </form>
+
+        <div id="result" class="result" style="display: none;">
+            <h2>Prediction Result</h2>
+            <p><strong>Predicted Class:</strong> <span id="result_class"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            // Get form data
+            var formData = new FormData(this);
+
+            // Make an AJAX request
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    // Update result section
+                    document.getElementById('result_class').textContent = data.class_name;
+                    document.getElementById('result').style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
