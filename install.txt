@@ -1,0 +1,33 @@
+pip install Flask-Mail
+
+pip install requests beautifulsoup4
+
+pip install flask opencv-python
+
+pip install flask opencv-python pillow
+
+pip install flask numpy pillow
+
+pip install flask google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+
+
+
+
+railway...
+
+
+
+pip install Flask flask-mysql mysql-connector-python
+
+pip install Flask mysql-connector-python
+
+pip install flask flask-mysqldb python-dotenv openai
+
+pip install python-dotenv
+
+pip install openai==0.27.0
+
+Use database tool, it will go to the database and  search the information according to prompt from the database.
+
+pip install flask mysql-connector-python openai
+
