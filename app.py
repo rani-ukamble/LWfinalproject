@@ -53,14 +53,14 @@ app.secret_key = os.getenv('SECRET_KEY')
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'syinfotech57@gmail.com'
-app.config['MAIL_PASSWORD'] = 'cuoe xjus ljup bizo'
+app.config['MAIL_USERNAME'] = ''
+app.config['MAIL_PASSWORD'] = ''
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
 
-VONAGE_API_KEY = 'aae37433'
-VONAGE_API_SECRET = 'cveSkI7nwxoQS8JA'
+VONAGE_API_KEY = ''
+VONAGE_API_SECRET = ''
 
 client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 sms = vonage.Sms(client)
