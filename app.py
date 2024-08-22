@@ -7,7 +7,7 @@ import requests
 from flask_mysqldb import MySQL
 from flask import Flask, Request, flash, redirect, render_template, request, session, url_for, send_file, jsonify, send_from_directory
 from PIL import Image, ImageFilter
-import io
+import io, re
 from flask_mail import Mail, Message
 from gtts import gTTS
 import requests
@@ -33,6 +33,16 @@ load_dotenv()
 mysql_user = os.getenv('MYSQL_USER')
 mysql_password = os.getenv('MYSQL_PASSWORD')
 
+# You can now test the application with sentences like:
+# "Show all databases."
+# "Show all records from table emp."
+# "Insert into emp values (59, 18, 'John', 'Mane'\)."
+# "Update emp set salary = 6000 where id = 1."
+# "Delete from emp where id = 1."
+# "Rename table old_name to new_name."
+# "Add column
+
+
 app = Flask(__name__)
 
 
@@ -53,14 +63,14 @@ app.secret_key = os.getenv('SECRET_KEY')
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = ''
-app.config['MAIL_PASSWORD'] = ''
+app.config['MAIL_USERNAME'] = 'syinfotech57@gmail.com'
+app.config['MAIL_PASSWORD'] = 'cuoe xjus ljup bizo'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
 
-VONAGE_API_KEY = ''
-VONAGE_API_SECRET = ''
+VONAGE_API_KEY = 'aae37433'
+VONAGE_API_SECRET = 'cveSkI7nwxoQS8JA'
 
 client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
 sms = vonage.Sms(client)
@@ -637,27 +647,108 @@ def apply_coolfilter():
 
 @app.route('/database')
 def database():
-    return render_template('db.html')
+    return render_template('query.html')
 
-@app.route('/db', methods=['GET', 'POST'])
-def db():
+@app.route('/query', methods=['GET', 'POST'])
+def query():
     data = None
     error = None
     if request.method == 'POST':
-        query = request.form['query']
-        try:
-            cur = mysql.connection.cursor()
-            cur.execute(query)
-            if query.strip().upper().startswith(('INSERT', 'UPDATE', 'DELETE')):
-                mysql.connection.commit()
-                data = "Query executed successfully."
-            else:
-                data = cur.fetchall()
-            cur.close()
-        except Exception as e:
-            error = str(e)
+        sentence = request.form['sentence']
+        query = convert_sentence_to_sql(sentence)
+        if query:
+            try:
+                cur = mysql.connection.cursor()
+                cur.execute(query)
+                if query.strip().upper().startswith(('INSERT', 'UPDATE', 'DELETE', 'RENAME', 'ALTER')):
+                    mysql.connection.commit()
+                    data = "Query executed successfully."
+                else:
+                    data = cur.fetchall()
+                cur.close()
+            except Exception as e:
+                error = str(e)
+        else:
+            error = "Failed to convert sentence to SQL query."
 
-    return render_template('db.html', data=data, error=error)
+    return render_template('query.html', data=data, error=error)
+
+def convert_sentence_to_sql(sentence):
+    # Lowercase and strip whitespace for easier parsing
+    sentence = sentence.lower().strip()
+
+    # Show databases
+    if "show all databases" in sentence:
+        return "SHOW DATABASES;"
+
+    # Select all records
+    elif "show all records from table" in sentence:
+        table_name = re.search(r"table (\w+)", sentence)
+        if table_name:
+            return f"SELECT * FROM {table_name.group(1)};"
+
+    # Insert record
+    elif "insert into" in sentence:
+        match = re.search(r"insert into (\w+) values \((.+)\)", sentence)
+        if match:
+            table_name = match.group(1)
+            values = match.group(2)
+            return f"INSERT INTO {table_name} VALUES ({values});"
+
+    # Update record
+    elif "update" in sentence and "set" in sentence:
+        match = re.search(r"update (\w+) set (.+) where (.+)", sentence)
+        if match:
+            table_name = match.group(1)
+            set_clause = match.group(2)
+            condition = match.group(3)
+            return f"UPDATE {table_name} SET {set_clause} WHERE {condition};"
+
+    # Delete record
+    elif "delete from" in sentence:
+        match = re.search(r"delete from (\w+) where (.+)", sentence)
+        if match:
+            table_name = match.group(1)
+            condition = match.group(2)
+            return f"DELETE FROM {table_name} WHERE {condition};"
+
+    # Rename table
+    elif "rename table" in sentence:
+        match = re.search(r"rename table (\w+) to (\w+)", sentence)
+        if match:
+            old_name = match.group(1)
+            new_name = match.group(2)
+            return f"RENAME TABLE {old_name} TO {new_name};"
+
+    # Add column
+    elif "add column" in sentence:
+        match = re.search(r"add column (\w+) (\w+) to table (\w+)", sentence)
+        if match:
+            column_name = match.group(1)
+            data_type = match.group(2)
+            table_name = match.group(3)
+            return f"ALTER TABLE {table_name} ADD COLUMN {column_name} {data_type};"
+
+    # Join tables
+    elif "join" in sentence and "on" in sentence:
+        match = re.search(r"select (.+) from (\w+) join (\w+) on (.+)", sentence)
+        if match:
+            columns = match.group(1)
+            table1 = match.group(2)
+            table2 = match.group(3)
+            condition = match.group(4)
+            return f"SELECT {columns} FROM {table1} JOIN {table2} ON {condition};"
+
+    # Simple SELECT with condition
+    elif "find" in sentence and "having" in sentence:
+        match = re.search(r"find (\w+) having (.+)", sentence)
+        if match:
+            column_name = match.group(1)
+            condition = match.group(2)
+            return f"SELECT * FROM your_table WHERE {column_name} {condition};"
+
+    return None
+
 
 
 # ************************************************************
@@ -739,6 +830,8 @@ def searchdrive():
     files = results.get('files', [])
 
     return render_template('drive.html', files=files)
+
+# *********************************************************************
 
 
 if __name__ == '__main__':
