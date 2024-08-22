@@ -25,6 +25,8 @@ import base64
 from io import BytesIO
 from PIL import Image
 from PIL import Image
+from twilio.rest import Client
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -69,11 +71,16 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
 
-VONAGE_API_KEY = 'aae37433'
-VONAGE_API_SECRET = 'cveSkI7nwxoQS8JA'
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Replace with a strong secret key
 
-client = vonage.Client(key=VONAGE_API_KEY, secret=VONAGE_API_SECRET)
-sms = vonage.Sms(client)
+# Twilio credentials from environment variables
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+
 
 # Configure upload folder
 app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -155,24 +162,17 @@ def send_sms():
     message_text = request.form['message']
     
     try:
-        response_data = sms.send_message(
-            {
-                "from": "VonageAPI",
-                "to": to_phone_number,
-                "text": message_text,
-            }
+        message = client.messages.create(
+            body=message_text,
+            from_=TWILIO_PHONE_NUMBER,
+            to=to_phone_number
         )
         
-        if response_data['messages'][0]['status'] == '0':
-            flash("Done!", "success")  # Flash success message
-        else:
-            flash(f"Message failed with error: {response_data['messages'][0]['error-text']}", "error")
-        
+        flash("Message sent successfully!", "success")  # Flash success message
     except Exception as e:
         flash(f"Failed to send SMS. Error: {e}", "error")
     
-    return redirect(url_for('index'))  # Redirect to index page
-
+    return redirect(url_for('sms_page'))  # Redirect back to SMS page
 
 # ********************************************************
 
