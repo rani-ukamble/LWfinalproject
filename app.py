@@ -167,12 +167,11 @@ def send_sms():
             from_=TWILIO_PHONE_NUMBER,
             to=to_phone_number
         )
-        
-        flash("Message sent successfully!", "success")  # Flash success message
+        flash("Message sent successfully!", "success")
     except Exception as e:
         flash(f"Failed to send SMS. Error: {e}", "error")
     
-    return redirect(url_for('sms_page'))  # Redirect back to SMS page
+    return redirect(url_for('sms_page'))
 
 # ********************************************************
 
